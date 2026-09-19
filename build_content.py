@@ -10,7 +10,7 @@ import os, re, shutil, sys, collections
 SRC = r"C:\Users\atu78\Desktop\靈感被搞\故事聖經_20260907\wiki\markdown"
 DST = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\atu78\Desktop\靈感被搞\空間魔導書wiki-quartz\content"
 
-FOLDERS = ["世界觀", "人物", "勢力", "器物", "地理", "設定"]
+FOLDERS = ["世界觀", "人物", "勢力", "器物", "地理", "設定", "問答"]
 
 # 重定向：alias -> target
 aliases = collections.defaultdict(list)
