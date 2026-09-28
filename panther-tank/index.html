@@ -1,0 +1,1860 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>豹式坦克 G型</title>
+<meta name="description" content="可旋轉、可操作並可匯出的豹式坦克 G 型 3D 模型，依實車諸元以 1:1 公尺比例建模。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --bg: #e5e7df;
+    --sky-top: #f0f1eb;
+    --sky-bottom: #c5cabc;
+    --panel: #f3f4ee;
+    --panel-2: #e7e9e1;
+    --ink: #1c2019;
+    --muted: #596053;
+    --line: #cbcfc3;
+    --accent: #4d5a2b;
+    --accent-ink: #f4f5ef;
+    --accent-soft: #dde2cd;
+    --focus: #9a7a33;
+    --sand: #bda36c;
+    --olive: #4b5534;
+    --brown: #5c3b2a;
+    --snow: #e5e3db;
+    --font-ui: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Heiti TC", "WenQuanYi Zen Hei", system-ui, sans-serif;
+    --font-dat: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", "Noto Sans TC", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #141712;
+      --sky-top: #2b3026;
+      --sky-bottom: #0d0f0b;
+      --panel: #1b1f18;
+      --panel-2: #242920;
+      --ink: #e8e8de;
+      --muted: #a2a997;
+      --line: #353b2f;
+      --accent: #cdb57e;
+      --accent-ink: #1a1d15;
+      --accent-soft: #37392a;
+      --focus: #e3cc92;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141712;
+    --sky-top: #2b3026;
+    --sky-bottom: #0d0f0b;
+    --panel: #1b1f18;
+    --panel-2: #242920;
+    --ink: #e8e8de;
+    --muted: #a2a997;
+    --line: #353b2f;
+    --accent: #cdb57e;
+    --accent-ink: #1a1d15;
+    --accent-soft: #37392a;
+    --focus: #e3cc92;
+  }
+
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 14px/1.55 var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 348px;
+    height: 100%;
+  }
+
+  /* ---------- 舞台 ---------- */
+  .stage {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: radial-gradient(120% 95% at 42% 28%, var(--sky-top) 0%, var(--sky-bottom) 100%);
+  }
+  #view {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    outline: none;
+  }
+  .plate {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    right: 24px;
+    pointer-events: none;
+  }
+  .eyebrow {
+    margin: 0;
+    font: 600 14px/1.2 var(--font-dat);
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  h1 {
+    margin: 4px 0 0;
+    font: 700 38px/1.1 var(--font-ui);
+    letter-spacing: 0.06em;
+    text-wrap: balance;
+  }
+  .sub {
+    margin: 6px 0 0;
+    font: 500 17px/1.3 var(--font-dat);
+    letter-spacing: 0.03em;
+    color: var(--muted);
+  }
+  .hint, .dial {
+    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 78%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+  }
+  .hint {
+    position: absolute;
+    left: 24px;
+    bottom: 18px;
+    margin: 0;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .dial {
+    position: absolute;
+    right: 20px;
+    bottom: 16px;
+    padding: 6px 8px 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .dial svg { width: 64px; height: 64px; display: block; }
+  .dial p { margin: 0; text-align: right; font-size: 12px; color: var(--muted); line-height: 1.35; }
+  .dial strong { display: block; font: 600 20px/1.1 var(--font-dat); color: var(--ink); font-variant-numeric: tabular-nums; }
+  #dial-gun { transform-origin: 32px 32px; transition: transform 0.12s linear; }
+  .loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font: 500 15px/1.4 var(--font-ui);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* ---------- 控制面板 ---------- */
+  .panel {
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--panel);
+    border-left: 1px solid var(--line);
+    padding-block: 20px 28px;
+    padding-inline: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .group { display: flex; flex-direction: column; gap: 10px; }
+  .group + .group { border-top: 1px solid var(--line); padding-top: 18px; }
+  h2 {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font: 700 15px/1.3 var(--font-ui);
+    letter-spacing: 0.08em;
+  }
+  h2 .de {
+    font: 500 13px/1 var(--font-dat);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .field { display: grid; grid-template-columns: 1fr auto; align-items: baseline; row-gap: 2px; }
+  .field label { font-size: 13px; }
+  .field output { font: 600 17px/1 var(--font-dat); font-variant-numeric: tabular-nums; }
+  .field input { grid-column: 1 / -1; }
+  .note { margin: 0; font-size: 12px; color: var(--muted); }
+  input[type="range"] {
+    width: 100%;
+    margin: 6px 0 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible, .switch input:focus-visible + .track {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .fire {
+    position: relative;
+    overflow: hidden;
+    border: 0;
+    border-radius: 6px;
+    padding: 11px 14px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font: 700 15px/1 var(--font-ui);
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+  }
+  .fire small { font: 600 13px/1 var(--font-dat); letter-spacing: 0.12em; opacity: 0.75; margin-left: 4px; text-indent: 0; }
+  .fire::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: calc(var(--reload, 1) * 100%);
+    background: var(--accent-ink);
+    opacity: 0.55;
+  }
+  .fire[disabled] { cursor: progress; opacity: 0.8; }
+
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--panel-2);
+  }
+  .seg button {
+    border: 0;
+    background: transparent;
+    padding: 8px 4px;
+    font-size: 13px;
+    line-height: 1.25;
+    color: var(--muted);
+  }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button small { display: block; font: 600 13px/1.1 var(--font-dat); letter-spacing: 0.04em; }
+  .seg button[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); }
+
+  .swatches { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .swatch {
+    display: grid;
+    gap: 6px;
+    text-align: left;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--panel-2);
+  }
+  .swatch[aria-checked="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+  .chips { display: flex; height: 12px; border-radius: 2px; overflow: hidden; }
+  .chips i { flex: 1; background: var(--c); }
+  .swatch .name { font-size: 13px; font-weight: 500; line-height: 1.2; }
+  .swatch .ral { font: 500 12px/1.1 var(--font-dat); letter-spacing: 0.05em; color: var(--muted); }
+
+  .switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .switch { position: relative; }
+  .switch input { position: absolute; right: 0; opacity: 0; width: 1px; height: 1px; }
+  .switch .track {
+    position: relative;
+    flex: none;
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--line);
+    transition: background 0.15s;
+  }
+  .switch .track::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--panel);
+    transition: transform 0.15s;
+  }
+  .switch input:checked + .track { background: var(--accent); }
+  .switch input:checked + .track::after { transform: translateX(16px); background: var(--accent-ink); }
+  .switch em { font-style: normal; font: 500 13px/1 var(--font-dat); letter-spacing: 0.06em; color: var(--muted); margin-left: 4px; }
+
+  .views { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .views button, .exports button {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--panel-2);
+    padding: 7px 2px;
+    font-size: 13px;
+  }
+  .views button:hover, .exports button:hover, .swatch:hover { border-color: var(--muted); }
+  .exports { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .exports button { display: grid; gap: 2px; padding: 9px 10px; text-align: left; }
+  .exports b { font: 700 18px/1 var(--font-dat); letter-spacing: 0.06em; }
+  .exports small { font-size: 12px; color: var(--muted); line-height: 1.3; }
+  .exports button[disabled] { opacity: 0.55; cursor: progress; }
+  .status { min-height: 1.5em; }
+
+  .specs { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; }
+  .specs dt { color: var(--muted); white-space: nowrap; }
+  .specs dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .specs .num { font: 600 15px/1.2 var(--font-dat); letter-spacing: 0.02em; }
+  .foot { margin: 0; font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 860px) {
+    html, body { height: auto; }
+    .app { display: block; height: auto; }
+    .stage { height: 62svh; min-height: 340px; }
+    .panel { border-left: 0; border-top: 1px solid var(--line); padding-inline: 16px; }
+    .plate { top: 16px; left: 16px; right: 16px; }
+    h1 { font-size: 28px; }
+    .sub { font-size: 15px; }
+    .hint { left: 16px; bottom: 14px; }
+    .dial { right: 14px; bottom: 12px; }
+    .dial svg { width: 52px; height: 52px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #dial-gun, .switch .track, .switch .track::after { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app" lang="zh-Hant">
+  <section class="stage" id="stage">
+    <canvas id="view" tabindex="0" aria-label="豹式坦克 G 型的 3D 模型，可拖曳旋轉、縮放"></canvas>
+    <header class="plate">
+      <p class="eyebrow">Sd.Kfz. 171 · Ausf. G</p>
+      <h1>豹式坦克</h1>
+      <p class="sub">Panzerkampfwagen V Panther　1 : 1 公尺比例</p>
+    </header>
+    <p class="hint" id="hint">拖曳旋轉　滾輪縮放　右鍵拖曳平移</p>
+    <div class="dial" aria-live="polite">
+      <p>砲塔方位<strong id="dial-text">12 點鐘</strong></p>
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"></circle>
+        <g id="dial-ticks" stroke="currentColor" stroke-opacity="0.6" stroke-width="1.5"></g>
+        <rect x="24" y="17" width="16" height="30" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.5"></rect>
+        <g id="dial-gun">
+          <circle cx="32" cy="33" r="6" fill="currentColor"></circle>
+          <rect x="30.8" y="7" width="2.4" height="24" rx="1.2" fill="currentColor"></rect>
+        </g>
+      </svg>
+    </div>
+    <div class="loading" id="loading">正在組裝車體…</div>
+  </section>
+
+  <aside class="panel" aria-label="模型控制">
+    <section class="group" aria-labelledby="g-turret">
+      <h2 id="g-turret">砲塔<span class="de">Turm</span></h2>
+      <div class="field">
+        <label for="traverse">砲塔旋轉</label>
+        <output id="traverse-out" for="traverse">正前方</output>
+        <input type="range" id="traverse" min="-180" max="180" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="elevation">主砲俯仰</label>
+        <output id="elevation-out" for="elevation">0.0°</output>
+        <input type="range" id="elevation" min="-8" max="18" step="0.5" value="0">
+      </div>
+      <p class="note">實車俯仰範圍 −8° 至 +18°，砲塔可 360° 旋轉。</p>
+      <button class="fire" id="fire" type="button">開火<small>FEUER</small></button>
+    </section>
+
+    <section class="group" aria-labelledby="g-drive">
+      <h2 id="g-drive">行駛<span class="de">Fahrt</span></h2>
+      <div class="seg" role="radiogroup" aria-labelledby="g-drive" id="speed">
+        <button type="button" role="radio" aria-checked="true" data-speed="0">停車<small>0 km/h</small></button>
+        <button type="button" role="radio" aria-checked="false" data-speed="4">慢行<small>4 km/h</small></button>
+        <button type="button" role="radio" aria-checked="false" data-speed="12">行進<small>12 km/h</small></button>
+      </div>
+      <p class="note">履帶、負重輪與主動輪依實際半徑同步轉動。</p>
+    </section>
+
+    <section class="group" aria-labelledby="g-paint">
+      <h2 id="g-paint">塗裝<span class="de">Anstrich</span></h2>
+      <div class="swatches" role="radiogroup" aria-labelledby="g-paint" id="schemes">
+        <button type="button" class="swatch" role="radio" aria-checked="true" data-scheme="tri">
+          <span class="chips"><i style="--c: var(--sand)"></i><i style="--c: var(--olive)"></i><i style="--c: var(--brown)"></i></span>
+          <span class="name">三色迷彩</span>
+          <span class="ral">RAL 7028 · 6003 · 8017</span>
+        </button>
+        <button type="button" class="swatch" role="radio" aria-checked="false" data-scheme="ambush">
+          <span class="chips"><i style="--c: var(--olive)"></i><i style="--c: var(--sand)"></i><i style="--c: var(--brown)"></i><i style="--c: var(--sand)"></i></span>
+          <span class="name">伏擊迷彩</span>
+          <span class="ral">Hinterhalt 1944</span>
+        </button>
+        <button type="button" class="swatch" role="radio" aria-checked="false" data-scheme="plain">
+          <span class="chips"><i style="--c: var(--sand)"></i></span>
+          <span class="name">單色暗黃</span>
+          <span class="ral">RAL 7028 Dunkelgelb</span>
+        </button>
+        <button type="button" class="swatch" role="radio" aria-checked="false" data-scheme="winter">
+          <span class="chips"><i style="--c: var(--snow)"></i><i style="--c: var(--snow)"></i><i style="--c: var(--olive)"></i></span>
+          <span class="name">冬季白漆</span>
+          <span class="ral">Winteranstrich</span>
+        </button>
+      </div>
+      <label class="switch" for="skirts">
+        <span class="lbl">側裙板<em>Schürzen</em></span>
+        <input type="checkbox" id="skirts"><span class="track" aria-hidden="true"></span>
+      </label>
+      <label class="switch" for="markings">
+        <span class="lbl">國籍標誌與車號</span>
+        <input type="checkbox" id="markings" checked><span class="track" aria-hidden="true"></span>
+      </label>
+    </section>
+
+    <section class="group" aria-labelledby="g-view">
+      <h2 id="g-view">視角<span class="de">Ansicht</span></h2>
+      <div class="views">
+        <button type="button" data-view="front34">斜前</button>
+        <button type="button" data-view="side">側面</button>
+        <button type="button" data-view="front">正面</button>
+        <button type="button" data-view="rear34">後方</button>
+        <button type="button" data-view="top">俯視</button>
+      </div>
+      <label class="switch" for="autorotate">
+        <span class="lbl">自動環繞</span>
+        <input type="checkbox" id="autorotate"><span class="track" aria-hidden="true"></span>
+      </label>
+    </section>
+
+    <section class="group" aria-labelledby="g-export" id="export-group">
+      <h2 id="g-export">匯出<span class="de">Export</span></h2>
+      <div class="exports">
+        <button type="button" data-export="glb"><b>GLB</b><small>Blender、遊戲引擎</small></button>
+        <button type="button" data-export="stl"><b>STL</b><small>3D 列印，1:35 毫米</small></button>
+        <button type="button" data-export="obj"><b>OBJ</b><small>通用網格格式</small></button>
+        <button type="button" data-export="png"><b>PNG</b><small>目前畫面截圖</small></button>
+      </div>
+      <p class="note status" id="export-status" role="status">模型檔以 ZIP 封裝。匯出內容與目前姿態、塗裝相同。</p>
+    </section>
+
+    <section class="group" aria-labelledby="g-spec">
+      <h2 id="g-spec">諸元<span class="de">Technische Daten</span></h2>
+      <dl class="specs">
+        <dt>全長</dt><dd><span class="num">8.66 m</span>（砲管朝前）</dd>
+        <dt>車體長</dt><dd><span class="num">6.87 m</span></dd>
+        <dt>全寬</dt><dd><span class="num">3.27 m</span>，含側裙 <span class="num">3.42 m</span></dd>
+        <dt>全高</dt><dd><span class="num">2.99 m</span></dd>
+        <dt>戰鬥全重</dt><dd><span class="num">44.8 t</span></dd>
+        <dt>乘員</dt><dd>5 人</dd>
+        <dt>主砲</dt><dd><span class="num">7,5 cm KwK 42 L/70</span></dd>
+        <dt>機槍</dt><dd><span class="num">MG 34</span> × 2（同軸、車身球座）</dd>
+        <dt>發動機</dt><dd><span class="num">Maybach HL 230 P30</span>，V12 汽油，700 PS</dd>
+        <dt>最高速度</dt><dd>公路 <span class="num">46 km/h</span></dd>
+        <dt>懸吊</dt><dd>雙扭力桿，每側 8 組交錯負重輪，輪徑 <span class="num">860 mm</span></dd>
+        <dt>履帶</dt><dd><span class="num">Kgs 64/660/150</span>，寬 660 mm</dd>
+        <dt>裝甲</dt><dd>車體前上 <span class="num">80 mm / 55°</span>、側上 <span class="num">50 mm / 30°</span>、砲塔正面 <span class="num">110 mm / 11°</span></dd>
+        <dt>產量</dt><dd>G 型約 <span class="num">2,950</span> 輛（1944–1945）</dd>
+      </dl>
+      <p class="foot">依公開諸元以 1:1 公尺比例建模，細部依照片比例簡化重建。</p>
+    </section>
+  </aside>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const $ = (s) => document.querySelector(s);
+const D = Math.PI / 180;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const loadingEl = $('#loading');
+
+/* ================= 數學小工具 ================= */
+const v3 = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
+const UP = v3(0, 1, 0);
+function mat(x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1) {
+  return new THREE.Matrix4().compose(v3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz)), v3(sx, sy, sz));
+}
+const chain = (...ms) => ms.reduce((acc, m) => acc.multiply(m), new THREE.Matrix4());
+const X90 = mat(0, 0, 0, Math.PI / 2);                 // 圓柱軸 Y → Z
+const alongX = (s = 1) => mat(0, 0, 0, 0, 0, -s * Math.PI / 2); // 圓柱軸 Y → ±X
+function alignY(p, dir) {
+  const q = new THREE.Quaternion().setFromUnitVectors(UP, dir.clone().normalize());
+  return new THREE.Matrix4().compose(p, q, v3(1, 1, 1));
+}
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function hash2(x, y) {
+  let h = Math.imul(x, 374761393) + Math.imul(y, 668265263);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const hex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+
+/* ================= 幾何工具 ================= */
+// 統一成 position / normal / uv 的非索引幾何，才能依材質合併
+function clean(geo) {
+  const g = geo.index ? geo.toNonIndexed() : geo;
+  if (!g.getAttribute('normal')) g.computeVertexNormals();
+  const out = new THREE.BufferGeometry();
+  const n = g.getAttribute('position').count;
+  out.setAttribute('position', g.getAttribute('position'));
+  out.setAttribute('normal', g.getAttribute('normal'));
+  out.setAttribute('uv', g.getAttribute('uv') || new THREE.BufferAttribute(new Float32Array(n * 2), 2));
+  return out;
+}
+// 兩個頂點環之間的凸多面體（裝甲板組成的車體、砲塔都用它）
+function solid(A, B) {
+  const n = A.length, tris = [];
+  for (let i = 1; i < n - 1; i++) { tris.push([A[0], A[i], A[i + 1]], [B[0], B[i + 1], B[i]]); }
+  for (let i = 0; i < n; i++) { const j = (i + 1) % n; tris.push([A[i], B[i], B[j]], [A[i], B[j], A[j]]); }
+  const c = v3();
+  [...A, ...B].forEach((p) => c.add(p));
+  c.divideScalar(2 * n);
+  const pos = [], e1 = v3(), e2 = v3(), nn = v3(), m = v3();
+  for (const [a, b, d] of tris) {
+    e1.subVectors(b, a); e2.subVectors(d, a); nn.crossVectors(e1, e2);
+    if (nn.lengthSq() < 1e-12) continue;
+    m.copy(a).add(b).add(d).divideScalar(3).sub(c);
+    if (nn.dot(m) < 0) pos.push(a.x, a.y, a.z, d.x, d.y, d.z, b.x, b.y, b.z);
+    else pos.push(a.x, a.y, a.z, b.x, b.y, b.z, d.x, d.y, d.z);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  return g;
+}
+// 以面法線主軸做盒狀投影 UV，讓迷彩連續覆蓋整台車
+function boxUV(geo, scale = 1 / 5, off = v3()) {
+  const p = geo.getAttribute('position'), uv = geo.getAttribute('uv');
+  const a = v3(), b = v3(), c = v3(), e1 = v3(), e2 = v3(), n = v3();
+  for (let i = 0; i < p.count; i += 3) {
+    a.fromBufferAttribute(p, i); b.fromBufferAttribute(p, i + 1); c.fromBufferAttribute(p, i + 2);
+    n.crossVectors(e1.subVectors(b, a), e2.subVectors(c, a));
+    const ax = Math.abs(n.x), ay = Math.abs(n.y), az = Math.abs(n.z);
+    [a, b, c].forEach((q, k) => {
+      const X = q.x + off.x, Y = q.y + off.y, Z = q.z + off.z;
+      let u, v;
+      if (ax >= ay && ax >= az) { u = Z + 0.37; v = Y + 1.13; }
+      else if (ay >= az) { u = X + 2.71; v = Z + 0.59; }
+      else { u = X + 4.19; v = Y + 3.31; }
+      uv.setXY(i + k, u * scale, v * scale);
+    });
+  }
+  uv.needsUpdate = true;
+}
+function lathe(pts, seg = 32) { return new THREE.LatheGeometry(pts.map(([r, h]) => new THREE.Vector2(r, h)), seg); }
+function extrude(shape, depth, curveSegments = 10) { return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments }); }
+function roundRect(w, h, r) {
+  const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+  return s;
+}
+// 多邊形每條邊各自內縮 d[i]（用來由砲塔底面推出斜面後的頂面）
+function insetPolygon(poly, d) {
+  const n = poly.length;
+  const area = poly.reduce((acc, p, i) => { const q = poly[(i + 1) % n]; return acc + p[0] * q[1] - q[0] * p[1]; }, 0);
+  const sg = area > 0 ? 1 : -1;
+  const lines = poly.map(([x1, z1], i) => {
+    const [x2, z2] = poly[(i + 1) % n];
+    let dx = x2 - x1, dz = z2 - z1;
+    const len = Math.hypot(dx, dz); dx /= len; dz /= len;
+    return { px: x1 - dz * sg * d[i], pz: z1 + dx * sg * d[i], dx, dz };
+  });
+  return poly.map((_, i) => {
+    const a = lines[(i - 1 + n) % n], b = lines[i];
+    const det = a.dx * b.dz - a.dz * b.dx;
+    const t = ((b.px - a.px) * b.dz - (b.pz - a.pz) * b.dx) / det;
+    return [a.px + a.dx * t, a.pz + a.dz * t];
+  });
+}
+// 平面貼花座標系：X 沿面水平、Y 沿面向上、Z 為外法線
+function planeFrame(o, n) {
+  const t = UP.clone().addScaledVector(n, -n.dot(UP)).normalize();
+  const u = v3().crossVectors(t, n);
+  return new THREE.Matrix4().makeBasis(u, t, n).setPosition(o);
+}
+
+/* ================= 貼圖（程序生成） ================= */
+function makeNoise(seed) {
+  const R = rng(seed), N = 256, tab = new Float32Array(N * N);
+  for (let i = 0; i < tab.length; i++) tab[i] = R();
+  return (x, y, px, py) => {
+    const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+    const x0 = ((xi % px) + px) % px, y0 = ((yi % py) + py) % py, x1 = (x0 + 1) % px, y1 = (y0 + 1) % py;
+    const a = tab[y0 * N + x0], b = tab[y0 * N + x1], c = tab[y1 * N + x0], d = tab[y1 * N + x1];
+    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  };
+}
+// 可無縫重複的 fBm 場（解析度 res，值域約 0–1）
+function field(seed, res, px, py, oct = 5, gain = 0.5, warp = 0) {
+  const n = makeNoise(seed), w1 = makeNoise(seed + 101), w2 = makeNoise(seed + 202);
+  const out = new Float32Array(res * res);
+  for (let j = 0; j < res; j++) {
+    for (let i = 0; i < res; i++) {
+      let u = i / res, v = j / res;
+      if (warp) {
+        const du = w1(u * 4, v * 4, 4, 4) - 0.5, dv = w2(u * 4, v * 4, 4, 4) - 0.5;
+        u += warp * du; v += warp * dv;
+      }
+      let amp = 1, sum = 0, norm = 0, fx = px, fy = py;
+      for (let o = 0; o < oct; o++) { sum += amp * n(u * fx, v * fy, fx, fy); norm += amp; amp *= gain; fx *= 2; fy *= 2; }
+      out[j * res + i] = sum / norm;
+    }
+  }
+  return out;
+}
+function quantile(f, q) { const a = Float32Array.from(f).sort(); return a[Math.min(a.length - 1, Math.floor(q * a.length))]; }
+function sampler(f, res) {
+  return (u, v) => {
+    const x = u * res - 0.5, y = v * res - 0.5, xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi;
+    const x0 = ((xi % res) + res) % res, x1 = (x0 + 1) % res, y0 = ((yi % res) + res) % res, y1 = (y0 + 1) % res;
+    const a = f[y0 * res + x0], b = f[y0 * res + x1], c = f[y1 * res + x0], d = f[y1 * res + x1];
+    return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
+  };
+}
+const PAINT = { yellow: hex('#b29a63'), green: hex('#4b5534'), brown: hex('#5c3b2a'), white: hex('#e2e0d7') };
+
+let CF = null;
+function camoFields() {
+  if (CF) return CF;
+  const R = 256;
+  const ridge = (f) => { for (let i = 0; i < f.length; i++) f[i] = 1 - Math.abs(2 * f[i] - 1); return f; };
+  const g = ridge(field(11, R, 3, 3, 5, 0.5, 0.22));
+  const b = ridge(field(29, R, 3, 3, 5, 0.5, 0.22));
+  const tone = field(47, R, 5, 5, 4, 0.55);
+  const streak = field(53, R, 40, 3, 3, 0.5);
+  const wear = field(61, R, 6, 6, 5, 0.6, 0.1);
+  CF = { R, g, b, tone, streak, wear, gT: quantile(g, 0.7), bT: quantile(b, 0.78), wT: quantile(wear, 0.26) };
+  return CF;
+}
+// 塗裝：三色迷彩、伏擊迷彩（色點）、單色暗黃、冬季白漆，再疊上色調、雨痕與掉漆
+function paintCanvas(kind) {
+  const F = camoFields(), S = 1024;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const ctx = cv.getContext('2d'), img = ctx.createImageData(S, S), px = img.data;
+  const sg = sampler(F.g, F.R), sb = sampler(F.b, F.R), st = sampler(F.tone, F.R), ss = sampler(F.streak, F.R), sw = sampler(F.wear, F.R);
+  const R = rng(1234);
+  const { yellow: Y, green: G, brown: B, white: W } = PAINT;
+  const e = 0.015, camo = kind !== 'plain', cell = 1 / 18, dotR = 0.0075;
+  for (let j = 0; j < S; j++) {
+    const v = (j + 0.5) / S;
+    for (let i = 0; i < S; i++) {
+      const u = (i + 0.5) / S;
+      let r = Y[0], g = Y[1], b = Y[2], ga = 0, ba = 0;
+      if (camo) {
+        const jit = (R() - 0.5) * 0.012;
+        ga = smooth(F.gT - e, F.gT + e, sg(u, v) + jit);
+        ba = smooth(F.bT - e, F.bT + e, sb(u, v) + jit);
+        r += (G[0] - r) * ga; g += (G[1] - g) * ga; b += (G[2] - b) * ga;
+        r += (B[0] - r) * ba; g += (B[1] - g) * ba; b += (B[2] - b) * ba;
+      }
+      if (kind === 'ambush') {
+        const ci = Math.floor(u / cell), cj = Math.floor(v / cell);
+        const cx = (ci + 0.3 + 0.4 * hash2(ci + 17, cj)) * cell, cy = (cj + 0.3 + 0.4 * hash2(ci, cj + 31)) * cell;
+        const dr = dotR * (0.7 + 0.6 * hash2(ci + 3, cj + 1));
+        const da = hash2(ci + 5, cj + 9) < 0.7 ? 1 - smooth(dr * 0.7, dr * 1.15, Math.hypot(u - cx, v - cy)) : 0;
+        if (da > 0) {
+          const C = ga < 0.5 && ba < 0.5 ? (hash2(ci, cj) < 0.5 ? G : B) : Y;
+          r += (C[0] - r) * da; g += (C[1] - g) * da; b += (C[2] - b) * da;
+        }
+      }
+      if (kind === 'winter') {
+        const wa = smooth(F.wT - 0.02, F.wT + 0.035, sw(u, v) + (R() - 0.5) * 0.03) * (0.84 + 0.16 * ss(u, v));
+        r += (W[0] - r) * wa; g += (W[1] - g) * wa; b += (W[2] - b) * wa;
+      }
+      const k = (0.92 + 0.15 * st(u, v)) * (1 - 0.16 * Math.max(0, ss(u, v) - 0.5)) * (1 + (R() - 0.5) * 0.04);
+      r *= k; g *= k; b *= k;
+      if (R() < 0.0008) { r *= 0.55; g *= 0.5; b *= 0.45; }
+      const o = (j * S + i) * 4;
+      px[o] = r; px[o + 1] = g; px[o + 2] = b; px[o + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  return cv;
+}
+function groundCanvas() {
+  const S = 1024, R = 256, cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const ctx = cv.getContext('2d'), img = ctx.createImageData(S, S), px = img.data;
+  const f1 = sampler(field(5, R, 4, 4, 6, 0.55, 0.1), R), f2 = sampler(field(9, R, 5, 5, 5, 0.5, 0.2), R), f3 = sampler(field(13, R, 10, 10, 4, 0.5), R);
+  const rr = rng(3);
+  const D1 = hex('#76694f'), D2 = hex('#8c7f65'), G1 = hex('#6d7049'), G2 = hex('#5a5f3c');
+  for (let j = 0; j < S; j++) {
+    const v = (j + 0.5) / S;
+    for (let i = 0; i < S; i++) {
+      const u = (i + 0.5) / S;
+      const a = smooth(0.3, 0.72, f1(u, v));
+      let r = D1[0] + (D2[0] - D1[0]) * a, g = D1[1] + (D2[1] - D1[1]) * a, b = D1[2] + (D2[2] - D1[2]) * a;
+      const gm = smooth(0.56, 0.68, f2(u, v)) * (0.45 + 0.4 * rr());
+      const q = rr(), gr = G1[0] + (G2[0] - G1[0]) * q, gg = G1[1] + (G2[1] - G1[1]) * q, gb = G1[2] + (G2[2] - G1[2]) * q;
+      r += (gr - r) * gm; g += (gg - g) * gm; b += (gb - b) * gm;
+      const k = (1 - 0.1 * smooth(0.55, 0.78, f3(u, v))) * (0.93 + rr() * 0.14);
+      r *= k; g *= k; b *= k;
+      if (rr() < 0.0025) { r = r * 0.4 + 150 * 0.6; g = g * 0.4 + 142 * 0.6; b = b * 0.4 + 124 * 0.6; }
+      const o = (j * S + i) * 4;
+      px[o] = r; px[o + 1] = g; px[o + 2] = b; px[o + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  return cv;
+}
+function radialCanvas(size, stops) {
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = size;
+  const c = cv.getContext('2d'), gr = c.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  stops.forEach(([o, col]) => gr.addColorStop(o, col));
+  c.fillStyle = gr;
+  c.fillRect(0, 0, size, size);
+  return cv;
+}
+function grilleCanvas() {
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 64;
+  const c = cv.getContext('2d');
+  c.fillStyle = '#1e1d1a'; c.fillRect(0, 0, 64, 64);
+  c.strokeStyle = '#8f8a7e'; c.lineWidth = 2;
+  for (let k = 4; k < 64; k += 8) { c.beginPath(); c.moveTo(k, 0); c.lineTo(k, 64); c.moveTo(0, k); c.lineTo(64, k); c.stroke(); }
+  return cv;
+}
+function crossCanvas() {
+  const S = 256, cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const c = cv.getContext('2d'), L = 236, W = 60, b = 15;
+  c.translate(S / 2, S / 2);
+  c.fillStyle = '#ecebe3';
+  c.fillRect(-(W / 2 + b), -L / 2, W + 2 * b, L); c.fillRect(-L / 2, -(W / 2 + b), L, W + 2 * b);
+  c.fillStyle = '#151515';
+  c.fillRect(-W / 2, -L / 2, W, L); c.fillRect(-L / 2, -W / 2, L, W);
+  return cv;
+}
+function numberCanvas(txt) {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 256;
+  const c = cv.getContext('2d');
+  c.font = '700 214px "Barlow Condensed", "Arial Narrow", Impact, sans-serif';
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+  c.lineWidth = 24; c.strokeStyle = '#ecebe3'; c.strokeText(txt, 256, 136);
+  c.fillStyle = '#171717'; c.fillText(txt, 256, 136);
+  return cv;
+}
+function flashCanvas() {
+  const S = 256, cv = radialCanvas(S, [[0, 'rgba(255,252,230,1)'], [0.18, 'rgba(255,214,130,0.95)'], [0.42, 'rgba(255,140,50,0.45)'], [1, 'rgba(255,90,20,0)']]);
+  const c = cv.getContext('2d');
+  c.globalCompositeOperation = 'lighter';
+  c.translate(S / 2, S / 2);
+  for (let k = 0; k < 9; k++) {
+    c.rotate((Math.PI * 2) / 9 + (k % 2) * 0.2);
+    const len = 70 + (k % 3) * 22;
+    const gr = c.createLinearGradient(0, 0, len, 0);
+    gr.addColorStop(0, 'rgba(255,230,160,0.8)'); gr.addColorStop(1, 'rgba(255,140,40,0)');
+    c.fillStyle = gr;
+    c.beginPath(); c.moveTo(0, -9); c.lineTo(len, 0); c.lineTo(0, 9); c.fill();
+  }
+  return cv;
+}
+function smokeCanvas() {
+  const S = 128, cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const c = cv.getContext('2d'), R = rng(77);
+  for (let k = 0; k < 14; k++) {
+    const x = S / 2 + (R() - 0.5) * 40, y = S / 2 + (R() - 0.5) * 40, r = 22 + R() * 26;
+    const gr = c.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, 'rgba(255,255,255,0.28)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = gr; c.fillRect(0, 0, S, S);
+  }
+  return cv;
+}
+function tex(canvas, { repeat = 1, srgb = true } = {}) {
+  const t = new THREE.CanvasTexture(canvas);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(repeat, repeat);
+  if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/* ================= 材質 ================= */
+const MAT = {
+  paint: new THREE.MeshStandardMaterial({ name: 'Paint', roughness: 0.8, metalness: 0.06 }),
+  rubber: new THREE.MeshStandardMaterial({ name: 'Rubber', color: 0x1e1d1b, roughness: 0.94 }),
+  track: new THREE.MeshStandardMaterial({ name: 'TrackSteel', color: 0x51483f, roughness: 0.78, metalness: 0.55 }),
+  steel: new THREE.MeshStandardMaterial({ name: 'DarkSteel', color: 0x34332f, roughness: 0.5, metalness: 0.75 }),
+  rust: new THREE.MeshStandardMaterial({ name: 'Exhaust', color: 0x4a3024, roughness: 0.95, metalness: 0.3 }),
+  wood: new THREE.MeshStandardMaterial({ name: 'Wood', color: 0x7f5e3d, roughness: 0.85 }),
+  cable: new THREE.MeshStandardMaterial({ name: 'Cable', color: 0x3d3a34, roughness: 0.65, metalness: 0.6 }),
+  grille: new THREE.MeshStandardMaterial({ name: 'Grille', roughness: 0.9, metalness: 0.35 }),
+  glass: new THREE.MeshStandardMaterial({ name: 'Glass', color: 0x101b21, roughness: 0.06, metalness: 0.9 }),
+  bore: new THREE.MeshBasicMaterial({ name: 'Bore', color: 0x060606 }),
+};
+MAT.paint.userData.boxUV = true;
+const grilleTex = tex(grilleCanvas(), { repeat: 7 });
+MAT.grille.map = grilleTex;
+
+// 依材質合併的組件：同一組件同材質只剩一個 mesh
+class Asm {
+  constructor(name, uvOff = v3()) { this.name = name; this.uvOff = uvOff; this.parts = new Map(); }
+  add(geo, key, m) {
+    const g = clean(geo);
+    if (m) g.applyMatrix4(m);
+    if (!this.parts.has(key)) this.parts.set(key, []);
+    this.parts.get(key).push(g);
+    return this;
+  }
+  build(target = new THREE.Group()) {
+    if (!target.name) target.name = this.name;
+    for (const [key, list] of this.parts) {
+      const g = mergeGeometries(list, false);
+      if (!g) throw new Error(`merge failed: ${this.name}/${key}`);
+      if (MAT[key].userData.boxUV) boxUV(g, 1 / 4, this.uvOff);
+      g.computeBoundingSphere();
+      const mesh = new THREE.Mesh(g, MAT[key]);
+      mesh.name = `${this.name}_${MAT[key].name}`;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      target.add(mesh);
+    }
+    return target;
+  }
+}
+
+/* ================= 尺寸（公尺；+Y 向上、+Z 車頭、+X 車體左側） ================= */
+const HULL = { bottom: 0.56, noseY: 1.0, noseZ: 3.35, deck: 1.85, spon: 1.2, low: 0.9, sponX: 1.56, deckX: 1.2, kG: Math.tan(55 * D), kR: Math.tan(30 * D), rearZ0: -2.755 };
+const zG = (y) => HULL.noseZ - (y - HULL.noseY) * HULL.kG;      // 上首上裝甲 55°
+const zL = (y) => HULL.noseZ - (HULL.noseY - y) * HULL.kG;      // 下首裝甲 55°
+const zR = (y) => HULL.rearZ0 - (y - HULL.bottom) * HULL.kR;    // 後裝甲 30°
+const SIDE_K = (HULL.sponX - HULL.deckX) / (HULL.deck - HULL.spon);
+const xS = (y) => HULL.sponX - (y - HULL.spon) * SIDE_K;       // 側上裝甲 G 型約 29°
+const nGlacis = v3(0, HULL.kG, 1).normalize();
+const nRear = v3(0, -HULL.kR, -1).normalize();
+const nSide = (s) => v3(s, SIDE_K, 0).normalize();
+const TUR = { z: -0.25, y: 1.87, h: 0.79, front: 0.95, rear: -1.33, fHalf: 0.98, rHalf: 1.14 };
+const GUN = { y: 0.35, z: 0.72 };
+const RUN = {
+  xc: 1.305,
+  wheelR: 0.43,
+  wheelY: 0.49,
+  stations: Array.from({ length: 8 }, (_, i) => 1.93 - 0.55 * i),
+  layers: [0.27, 0.15, -0.15, -0.27],
+  sprocket: { z: 2.85, y: 0.7, r: 0.405 },
+  idler: { z: -2.72, y: 0.62, r: 0.33 },
+  roller: { z: 2.3, y: 0.965, r: 0.1 },
+};
+function sideFrame(s, y, z, lift = 0) {
+  const n = nSide(s), t = UP.clone().addScaledVector(n, -n.dot(UP)).normalize(), u = v3().crossVectors(n, t);
+  return new THREE.Matrix4().makeBasis(n, t, u).setPosition(v3(s * xS(y), y, z).addScaledVector(n, lift));
+}
+function towBracket(front) {
+  const s = new THREE.Shape();
+  if (front) {
+    s.moveTo(2.8, 0.62); s.lineTo(3.2, 0.62); s.absarc(3.2, 0.78, 0.16, -Math.PI / 2, Math.PI / 2, false); s.lineTo(2.8, 0.94); s.lineTo(2.8, 0.62);
+    const h = new THREE.Path(); h.absarc(3.22, 0.78, 0.06, 0, Math.PI * 2, true); s.holes.push(h);
+  } else {
+    s.moveTo(-2.7, 0.63); s.lineTo(-3.05, 0.63); s.absarc(-3.05, 0.78, 0.15, -Math.PI / 2, Math.PI / 2, true); s.lineTo(-2.7, 0.93); s.lineTo(-2.7, 0.63);
+    const h = new THREE.Path(); h.absarc(-3.07, 0.78, 0.055, 0, Math.PI * 2, true); s.holes.push(h);
+  }
+  return extrude(s, 0.06, 12);
+}
+// 形狀在 (z, y) 平面、擠出方向 −X
+const zyToX = (x0) => new THREE.Matrix4().makeBasis(v3(0, 0, 1), v3(0, 1, 0), v3(-1, 0, 0)).setPosition(x0, 0, 0);
+
+/* ================= 車體 ================= */
+function buildHull() {
+  const a = new Asm('Hull');
+  const P = v3;
+  const prof = [[zL(HULL.bottom), HULL.bottom], [HULL.noseZ, HULL.noseY], [zG(HULL.deck), HULL.deck], [zR(HULL.deck), HULL.deck], [zR(HULL.bottom), HULL.bottom]];
+  a.add(solid(prof.map(([z, y]) => P(-HULL.low, y, z)), prof.map(([z, y]) => P(HULL.low, y, z))), 'paint');
+
+  // 砲塔座圈
+  a.add(new THREE.CylinderGeometry(0.93, 0.95, 0.04, 48), 'paint', mat(0, HULL.deck + 0.01, TUR.z));
+
+  for (const s of [1, -1]) {
+    // 懸出的側箱（sponson）
+    const q = [[HULL.low, HULL.spon], [HULL.sponX, HULL.spon], [HULL.deckX, HULL.deck], [HULL.low, HULL.deck]];
+    a.add(solid(q.map(([x, y]) => P(s * x, y, zG(y))), q.map(([x, y]) => P(s * x, y, zR(y)))), 'paint');
+
+    // 駕駛／無線電手艙蓋與潛望鏡
+    a.add(extrude(roundRect(0.5, 0.6, 0.09), 0.035), 'paint', mat(s * 0.53, HULL.deck, 1.4, -Math.PI / 2));
+    a.add(new THREE.BoxGeometry(0.1, 0.05, 0.12), 'paint', mat(s * 0.53, HULL.deck + 0.05, 1.76));
+    a.add(new THREE.CylinderGeometry(0.075, 0.08, 0.05, 20), 'paint', mat(s * 0.53, HULL.deck + 0.025, 1.93));
+    a.add(new THREE.BoxGeometry(0.17, 0.09, 0.12), 'paint', mat(s * 0.53, HULL.deck + 0.09, 1.93));
+    a.add(new THREE.BoxGeometry(0.14, 0.045, 0.01), 'glass', mat(s * 0.53, HULL.deck + 0.085, 1.993));
+    a.add(new THREE.BoxGeometry(0.2, 0.012, 0.05), 'paint', mat(s * 0.53, HULL.deck + 0.14, 2.0));
+
+    // 前後拖車鉤座（下側板延伸）與鉤環
+    for (const front of [true, false]) {
+      const x0 = s > 0 ? 0.9 : -0.84;
+      a.add(towBracket(front), 'paint', zyToX(x0));
+      const hz = front ? 3.22 : -3.07;
+      a.add(new THREE.CylinderGeometry(0.03, 0.03, 0.16, 12), 'steel', chain(mat(s * 0.87, 0.78, hz), alongX()));
+      a.add(new THREE.TorusGeometry(0.08, 0.018, 8, 18, Math.PI), 'steel', mat(s * 0.87, 0.78, hz, 0, Math.PI / 2, Math.PI));
+    }
+
+    // 最終傳動外殼
+    a.add(new THREE.CylinderGeometry(0.16, 0.2, 0.16, 24), 'paint', chain(mat(s * 0.98, RUN.sprocket.y, RUN.sprocket.z), alongX(s)));
+    a.add(new THREE.CylinderGeometry(0.1, 0.1, RUN.xc - 1.0, 16), 'steel', chain(mat(s * (1.0 + (RUN.xc - 1.0) / 2), RUN.sprocket.y, RUN.sprocket.z), alongX(s)));
+
+    // 扭力臂與輪軸
+    RUN.stations.forEach((z, i) => {
+      const outer = i % 2 === 0;
+      const xo = RUN.xc + (outer ? RUN.layers[0] : RUN.layers[1]);
+      a.add(new THREE.CylinderGeometry(0.045, 0.045, xo - 0.92, 12), 'steel', chain(mat(s * (0.92 + (xo - 0.92) / 2), RUN.wheelY, z), alongX(s)));
+      a.add(new THREE.BoxGeometry(0.07, 0.09, 0.4), 'steel', mat(s * 0.96, RUN.wheelY + 0.06, z + 0.18, -16 * D));
+    });
+
+    // 誘導輪支架、上部托輪支架
+    a.add(new THREE.BoxGeometry(0.1, 0.2, 0.46), 'paint', mat(s * 0.93, RUN.idler.y + 0.04, RUN.idler.z + 0.18));
+    a.add(new THREE.CylinderGeometry(0.07, 0.07, RUN.xc - 0.9, 16), 'steel', chain(mat(s * (0.9 + (RUN.xc - 0.9) / 2), RUN.idler.y, RUN.idler.z), alongX(s)));
+    a.add(new THREE.BoxGeometry(0.09, 0.12, 0.12), 'paint', mat(s * 0.95, RUN.roller.y, RUN.roller.z));
+    a.add(new THREE.CylinderGeometry(0.035, 0.035, RUN.xc - 0.95, 12), 'steel', chain(mat(s * (0.95 + (RUN.xc - 0.95) / 2), RUN.roller.y, RUN.roller.z), alongX(s)));
+
+    // 擋泥板、履帶護板條、側裙掛軌
+    a.add(new THREE.BoxGeometry(0.7, 0.012, 0.44), 'paint', mat(s * 1.29, HULL.spon + 0.052, zG(HULL.spon) + 0.215, -12 * D));
+    a.add(new THREE.BoxGeometry(0.7, 0.012, 0.26), 'paint', mat(s * 1.29, HULL.spon - 0.045, zR(HULL.spon) - 0.122, -20 * D));
+    a.add(new THREE.BoxGeometry(0.1, 0.012, 6.1), 'paint', mat(s * 1.6, HULL.spon + 0.006, -0.03));
+    a.add(new THREE.BoxGeometry(0.035, 0.05, 5.95), 'paint', mat(s * 1.625, HULL.spon + 0.045, -0.06));
+
+    // 引擎甲板：方形進氣柵與兩個圓形風扇柵
+    const gx = s * 0.8;
+    a.add(new THREE.BoxGeometry(0.62, 0.05, 0.05), 'paint', mat(gx, HULL.deck + 0.02, -1.745));
+    a.add(new THREE.BoxGeometry(0.62, 0.05, 0.05), 'paint', mat(gx, HULL.deck + 0.02, -2.155));
+    a.add(new THREE.BoxGeometry(0.05, 0.05, 0.36), 'paint', mat(gx - 0.285, HULL.deck + 0.02, -1.95));
+    a.add(new THREE.BoxGeometry(0.05, 0.05, 0.36), 'paint', mat(gx + 0.285, HULL.deck + 0.02, -1.95));
+    a.add(new THREE.BoxGeometry(0.54, 0.02, 0.38), 'grille', mat(gx, HULL.deck + 0.01, -1.95));
+    for (const fz of [-2.5, -3.12]) {
+      a.add(lathe([[0.245, 0], [0.29, 0], [0.29, 0.05], [0.245, 0.05], [0.245, 0]], 40), 'paint', mat(gx, HULL.deck, fz));
+      a.add(new THREE.CylinderGeometry(0.248, 0.248, 0.02, 36), 'grille', mat(gx, HULL.deck + 0.012, fz));
+      a.add(new THREE.CylinderGeometry(0.06, 0.07, 0.06, 20), 'paint', mat(gx, HULL.deck + 0.03, fz));
+      for (let k = 0; k < 4; k++) a.add(new THREE.BoxGeometry(0.48, 0.02, 0.028), 'paint', mat(gx, HULL.deck + 0.035, fz, 0, (k * Math.PI) / 4));
+    }
+
+    // 後裝甲：排氣管護罩、排氣管、置物箱
+    const ex = s * 0.42;
+    a.add(new THREE.BoxGeometry(0.28, 0.36, 0.52), 'paint', mat(ex, 1.33, zR(1.33) - 0.22));
+    a.add(new THREE.CylinderGeometry(0.07, 0.075, 0.85, 18), 'rust', mat(ex, 1.885, -3.62));
+    a.add(new THREE.CylinderGeometry(0.082, 0.078, 0.035, 18), 'rust', mat(ex, 2.3, -3.62));
+    const bx0 = s * 0.62, bx1 = s * 1.05, yb0 = 1.26, yb1 = 1.66, zf = zR(yb1) - 0.26;
+    const bin = [[zR(yb0), yb0], [zR(yb1), yb1], [zf, yb1], [zf, yb0]];
+    a.add(solid(bin.map(([z, y]) => P(bx0, y, z)), bin.map(([z, y]) => P(bx1, y, z))), 'paint');
+    a.add(new THREE.BoxGeometry(0.06, 0.05, 0.02), 'steel', mat(s * 0.835, yb1 - 0.07, zf - 0.01));
+  }
+  // 左排氣管兩側的冷卻管
+  for (const dx of [-0.14, 0.14]) {
+    a.add(new THREE.CylinderGeometry(0.034, 0.036, 0.62, 12), 'rust', mat(0.42 + dx, 1.77, -3.6));
+    a.add(new THREE.CylinderGeometry(0.042, 0.042, 0.03, 12), 'rust', mat(0.42 + dx, 2.08, -3.6));
+  }
+
+  // 引擎檢修艙蓋與通風口
+  a.add(new THREE.BoxGeometry(0.92, 0.035, 1.3), 'paint', mat(0, HULL.deck + 0.0175, -2.55));
+  a.add(new THREE.CylinderGeometry(0.15, 0.16, 0.07, 28), 'paint', mat(0, HULL.deck + 0.07, -2.2));
+  for (const s of [1, -1]) {
+    a.add(new THREE.CylinderGeometry(0.035, 0.035, 0.06, 12), 'paint', mat(s * 0.26, HULL.deck + 0.065, -2.95));
+    a.add(new THREE.CylinderGeometry(0.085, 0.09, 0.035, 20), 'paint', mat(s * 0.26, HULL.deck + 0.11, -2.95));
+  }
+
+  // 車身機槍球座（右側）
+  const mg = v3(-0.58, 1.5, zG(1.5));
+  a.add(new THREE.CylinderGeometry(0.19, 0.22, 0.05, 28), 'paint', alignY(mg.clone().addScaledVector(nGlacis, 0.02), nGlacis));
+  const ball = mg.clone().addScaledVector(nGlacis, 0.035);
+  a.add(new THREE.SphereGeometry(0.125, 20, 14), 'paint', mat(ball.x, ball.y, ball.z));
+  a.add(new THREE.CylinderGeometry(0.022, 0.024, 0.3, 10), 'steel', chain(mat(ball.x, ball.y - 0.02, ball.z + 0.24), X90));
+
+  // 車頭燈（左上）
+  a.add(new THREE.BoxGeometry(0.04, 0.07, 0.05), 'paint', mat(0.8, HULL.deck + 0.035, 2.1));
+  a.add(new THREE.CylinderGeometry(0.065, 0.065, 0.12, 20), 'paint', chain(mat(0.8, HULL.deck + 0.1, 2.1), X90));
+  a.add(new THREE.CylinderGeometry(0.052, 0.052, 0.012, 20), 'glass', chain(mat(0.8, HULL.deck + 0.1, 2.162), X90));
+
+  // 千斤頂、車尾燈
+  a.add(new THREE.CylinderGeometry(0.075, 0.075, 0.55, 20), 'paint', chain(mat(0, 0.98, zR(0.98) - 0.09), alongX()));
+  for (const dx of [-0.2, 0.2]) a.add(new THREE.BoxGeometry(0.04, 0.12, 0.1), 'steel', mat(dx, 0.98, zR(0.98) - 0.04));
+  a.add(new THREE.BoxGeometry(0.1, 0.06, 0.05), 'paint', mat(-0.62, 1.12, zR(1.12) - 0.03));
+
+  // 左側：砲管清潔桿筒、圓鍬、撬棍
+  const tube = sideFrame(1, 1.46, -0.65, 0.05);
+  a.add(new THREE.CylinderGeometry(0.048, 0.048, 2.3, 16), 'paint', chain(tube.clone(), X90));
+  for (const dz of [-0.95, 0, 0.95]) a.add(new THREE.CylinderGeometry(0.056, 0.056, 0.035, 16), 'steel', chain(tube.clone(), mat(0, 0, dz), X90));
+  a.add(new THREE.CylinderGeometry(0.017, 0.017, 0.8, 8), 'wood', chain(sideFrame(1, 1.32, 1.4, 0.03), X90));
+  a.add(new THREE.BoxGeometry(0.012, 0.24, 0.3), 'paint', sideFrame(1, 1.32, 1.95, 0.02));
+  a.add(new THREE.CylinderGeometry(0.015, 0.015, 1.2, 8), 'steel', chain(sideFrame(1, 1.7, 0.4, 0.02), X90));
+
+  // 右側：拖纜、大錘、斧頭
+  const cablePts = [];
+  for (let k = 0; k <= 24; k++) {
+    const z = -1.85 + (k / 24) * 3.4;
+    cablePts.push(v3(-xS(1.46), 1.46, z).addScaledVector(nSide(-1), 0.03 + 0.004 * Math.sin(k * 1.7)));
+  }
+  a.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(cablePts), 60, 0.02, 8), 'cable');
+  for (const end of [cablePts[0], cablePts[cablePts.length - 1]]) {
+    a.add(new THREE.TorusGeometry(0.06, 0.018, 8, 16), 'cable', chain(new THREE.Matrix4().setPosition(end.x, end.y, end.z + (end.z > 0 ? 0.07 : -0.07)), sideFrame(-1, 1.46, 0).setPosition(0, 0, 0), mat(0, 0, 0, 0, Math.PI / 2)));
+  }
+  a.add(new THREE.CylinderGeometry(0.018, 0.018, 0.85, 8), 'wood', chain(sideFrame(-1, 1.3, -1.45, 0.03), X90));
+  a.add(new THREE.BoxGeometry(0.07, 0.18, 0.07), 'steel', sideFrame(-1, 1.3, -1.9, 0.04));
+  a.add(new THREE.CylinderGeometry(0.016, 0.016, 0.7, 8), 'wood', chain(sideFrame(-1, 1.3, 0.45, 0.03), X90));
+  a.add(new THREE.BoxGeometry(0.02, 0.16, 0.1), 'steel', sideFrame(-1, 1.3, 0.83, 0.03));
+
+  // 無線電天線（右後）
+  a.add(new THREE.CylinderGeometry(0.05, 0.06, 0.09, 16), 'paint', mat(-1.08, HULL.deck + 0.045, -2.3));
+  return a;
+}
+
+/* ================= 砲塔與主砲 ================= */
+function buildTurret() {
+  const turret = new THREE.Group();
+  turret.name = 'Turret';
+  turret.position.set(0, TUR.y, TUR.z);
+  const a = new Asm('Turret', v3(0, TUR.y, TUR.z));
+  const base = [[TUR.fHalf, TUR.front], [TUR.rHalf, TUR.rear], [-TUR.rHalf, TUR.rear], [-TUR.fHalf, TUR.front]];
+  const side = TUR.h * Math.tan(25 * D);
+  const top = insetPolygon(base, [side, side, side, TUR.h * Math.tan(11 * D)]);
+  const B = base.map(([x, z]) => v3(x, 0, z)), T = top.map(([x, z]) => v3(x, TUR.h, z));
+  a.add(solid(B, T), 'paint');
+
+  // 車長指揮塔（左後，側面凸出）
+  const cx = 0.6, cz = -0.62;
+  a.add(new THREE.CylinderGeometry(0.335, 0.345, 0.52, 36), 'paint', mat(cx, 0.56, cz));
+  a.add(new THREE.CylinderGeometry(0.315, 0.325, 0.12, 36), 'paint', mat(cx, 0.88, cz));
+  for (let k = 0; k < 7; k++) {
+    const t = (k / 7) * Math.PI * 2 + 0.3;
+    a.add(new THREE.BoxGeometry(0.11, 0.045, 0.03), 'glass', mat(cx + Math.sin(t) * 0.317, 0.9, cz + Math.cos(t) * 0.317, 0, t));
+  }
+  a.add(new THREE.CylinderGeometry(0.345, 0.345, 0.04, 36), 'paint', mat(cx, 0.96, cz));
+  a.add(new THREE.CylinderGeometry(0.26, 0.27, 0.05, 32), 'paint', mat(cx, 1.005, cz));
+  a.add(new THREE.BoxGeometry(0.1, 0.04, 0.08), 'paint', mat(cx - 0.2, 1.02, cz + 0.12));
+  a.add(new THREE.TorusGeometry(0.3, 0.012, 8, 44), 'steel', mat(cx, 1.09, cz, Math.PI / 2));
+  for (let k = 0; k < 3; k++) {
+    const t = (k / 3) * Math.PI * 2;
+    a.add(new THREE.CylinderGeometry(0.01, 0.01, 0.11, 6), 'steel', mat(cx + Math.sin(t) * 0.3, 1.035, cz + Math.cos(t) * 0.3));
+  }
+
+  // 砲塔頂部：裝填手潛望鏡、通風器、吊車插座、近接防禦武器
+  const roof = TUR.h;
+  a.add(new THREE.CylinderGeometry(0.07, 0.075, 0.04, 16), 'paint', mat(-0.4, roof + 0.02, 0.38));
+  a.add(new THREE.BoxGeometry(0.15, 0.08, 0.11), 'paint', mat(-0.4, roof + 0.07, 0.38));
+  a.add(new THREE.BoxGeometry(0.12, 0.04, 0.01), 'glass', mat(-0.4, roof + 0.07, 0.436));
+  a.add(new THREE.CylinderGeometry(0.11, 0.12, 0.07, 24), 'paint', mat(-0.05, roof + 0.035, 0.5));
+  a.add(new THREE.CylinderGeometry(0.13, 0.13, 0.02, 24), 'paint', mat(-0.05, roof + 0.08, 0.5));
+  for (const [px, pz] of [[0.3, 0.5], [-0.6, -0.3], [0.12, -0.85]]) a.add(new THREE.CylinderGeometry(0.035, 0.045, 0.06, 12), 'paint', mat(px, roof + 0.03, pz));
+  a.add(new THREE.CylinderGeometry(0.075, 0.085, 0.1, 20), 'paint', mat(-0.45, roof + 0.05, -0.62));
+  a.add(new THREE.CylinderGeometry(0.05, 0.05, 0.03, 16), 'paint', mat(-0.45, roof + 0.115, -0.62));
+
+  // 後部逃生艙門
+  const nTR = v3(0, Math.tan(25 * D), -1).normalize();
+  const hc = v3(0, 0.4, TUR.rear + 0.4 * Math.tan(25 * D));
+  a.add(new THREE.CylinderGeometry(0.25, 0.25, 0.04, 36), 'paint', alignY(hc.clone().addScaledVector(nTR, 0.02), nTR));
+  a.add(new THREE.BoxGeometry(0.34, 0.05, 0.05), 'paint', chain(planeFrame(hc.clone().addScaledVector(nTR, 0.045), nTR), mat(0, 0.2, 0)));
+
+  // 防盾上方的雨水導板
+  a.add(new THREE.BoxGeometry(1.1, 0.025, 0.07), 'paint', mat(0, 0.755, TUR.front - 0.755 * Math.tan(11 * D) + 0.03));
+  a.build(turret);
+
+  // 砲耳與主砲（俯仰）
+  const gun = new THREE.Group();
+  gun.name = 'Gun';
+  gun.position.set(0, GUN.y, GUN.z);
+  const off = v3(0, TUR.y + GUN.y, TUR.z + GUN.z);
+  const m = new Asm('Mantlet', off);
+  m.add(new THREE.CylinderGeometry(0.37, 0.37, 1.22, 40, 1, false, -84 * D, 168 * D), 'paint', mat(0, 0, 0, 0, 0, Math.PI / 2));
+  m.add(new THREE.BoxGeometry(0.96, 0.12, 0.15), 'paint', mat(0, -0.295, 0.225));
+  m.add(new THREE.CylinderGeometry(0.155, 0.165, 0.24, 28), 'paint', chain(mat(0, 0, 0.42), X90));
+  m.add(new THREE.CylinderGeometry(0.05, 0.055, 0.07, 18), 'paint', chain(mat(0.3, 0.04, 0.37), X90));
+  m.add(new THREE.CylinderGeometry(0.028, 0.028, 0.01, 16), 'bore', chain(mat(0.3, 0.04, 0.407), X90));
+  m.add(new THREE.CylinderGeometry(0.045, 0.05, 0.06, 16), 'paint', chain(mat(-0.27, -0.02, 0.37), X90));
+  m.add(new THREE.CylinderGeometry(0.012, 0.012, 0.1, 8), 'steel', chain(mat(-0.27, -0.02, 0.43), X90));
+  m.build(gun);
+
+  const barrel = new THREE.Group();
+  barrel.name = 'Barrel';
+  const b = new Asm('Barrel', off);
+  b.add(new THREE.CylinderGeometry(0.062, 0.085, 3.62, 28), 'paint', chain(mat(0, 0, 0.54 + 1.81), X90));
+  b.add(new THREE.CylinderGeometry(0.072, 0.07, 0.12, 24), 'paint', chain(mat(0, 0, 4.22), X90));
+  for (const [z, l] of [[4.31, 0.06], [4.465, 0.05], [4.615, 0.05]]) b.add(new THREE.CylinderGeometry(0.108, 0.108, l, 28), 'paint', chain(mat(0, 0, z), X90));
+  b.add(new THREE.CylinderGeometry(0.108, 0.108, 0.36, 12, 1, false, Math.PI - 0.62, 1.24), 'paint', chain(mat(0, 0, 4.46), X90));
+  b.add(new THREE.CylinderGeometry(0.108, 0.108, 0.36, 12, 1, false, -0.62, 1.24), 'paint', chain(mat(0, 0, 4.46), X90));
+  b.add(new THREE.CylinderGeometry(0.05, 0.05, 0.36, 16), 'steel', chain(mat(0, 0, 4.46), X90));
+  b.add(new THREE.CylinderGeometry(0.037, 0.037, 0.006, 20), 'bore', chain(mat(0, 0, 4.643), X90));
+  b.build(barrel);
+  gun.add(barrel);
+  turret.add(gun);
+
+  // 車號貼花（兩側）
+  for (const s of [1, -1]) {
+    const i0 = s > 0 ? 0 : 3, i1 = s > 0 ? 1 : 2;
+    const e1 = v3().subVectors(B[i1], B[i0]), e2 = v3().subVectors(T[i0], B[i0]);
+    const n = v3().crossVectors(e1, e2).normalize();
+    if (n.x * s < 0) n.negate();
+    const y = 0.4, zc = 0.12;
+    const t = (TUR.front - zc) / (TUR.front - TUR.rear);
+    const xb = TUR.fHalf + (TUR.rHalf - TUR.fHalf) * t;
+    const o = v3(s * (xb - y * Math.tan(25 * D)), y, zc).addScaledVector(n, 0.004);
+    turret.add(decal(DECAL.number, 0.56, 0.28, planeFrame(o, n)));
+  }
+  return { turret, gun, barrel };
+}
+
+/* ================= 行走機構 ================= */
+function wheelGeos() {
+  const tireProf = [[0.352, -0.046], [0.415, -0.046], [0.429, -0.032], [0.43, 0], [0.429, 0.032], [0.415, 0.046], [0.352, 0.046], [0.352, -0.046]];
+  const discProf = [[0, -0.036], [0.1, -0.036], [0.21, -0.022], [0.335, -0.036], [0.356, -0.044], [0.356, 0.044], [0.338, 0.038], [0.3, 0.027], [0.2, 0.015], [0.125, 0.024], [0.1, 0.036], [0.082, 0.04], [0.076, 0.066], [0, 0.07]];
+  const build = (seg, bolts) => {
+    const parts = [clean(lathe(discProf, seg))];
+    if (bolts) {
+      for (let k = 0; k < 16; k++) {
+        const t = (k / 16) * Math.PI * 2;
+        parts.push(clean(new THREE.CylinderGeometry(0.011, 0.011, 0.016, 6)).applyMatrix4(mat(Math.cos(t) * 0.318, 0.034, Math.sin(t) * 0.318)));
+      }
+      for (let k = 0; k < 6; k++) {
+        const t = (k / 6) * Math.PI * 2 + 0.2;
+        parts.push(clean(new THREE.BoxGeometry(0.013, 0.012, 0.013)).applyMatrix4(mat(Math.cos(t) * 0.056, 0.072, Math.sin(t) * 0.056, 0, -t)));
+      }
+    }
+    const d = mergeGeometries(parts), t = clean(lathe(tireProf, seg)), r = alongX();
+    d.applyMatrix4(r); t.applyMatrix4(r);
+    boxUV(d, 1 / 4);
+    return { tire: t, disc: d };
+  };
+  return { outer: build(28, true), inner: build(20, false) };
+}
+function gearShape(teeth, rRoot, rTip, holeR) {
+  const s = new THREE.Shape(), step = (Math.PI * 2) / teeth;
+  for (let i = 0; i < teeth; i++) {
+    const a0 = i * step;
+    [[rRoot, a0 - step * 0.5], [rRoot, a0 - step * 0.2], [rTip, a0 - step * 0.1], [rTip, a0 + step * 0.1], [rRoot, a0 + step * 0.2]].forEach(([r, t], k) => {
+      const x = r * Math.cos(t), y = r * Math.sin(t);
+      if (i === 0 && k === 0) s.moveTo(x, y); else s.lineTo(x, y);
+    });
+  }
+  s.closePath();
+  const h = new THREE.Path(); h.absarc(0, 0, holeR, 0, Math.PI * 2, true); s.holes.push(h);
+  return s;
+}
+// 旋轉零件：外層負責轉動（繞 X），內層負責左右鏡像
+function spinner(name, pos, asm, s) {
+  const pivot = new THREE.Group(), inner = new THREE.Group();
+  pivot.name = `${name}_${s > 0 ? 'L' : 'R'}`;
+  pivot.position.copy(pos);
+  if (s < 0) inner.rotation.y = Math.PI;
+  asm.build(inner);
+  pivot.add(inner);
+  return pivot;
+}
+function buildSprocket(s) {
+  const a = new Asm('Sprocket');
+  const ring = extrude(gearShape(17, 0.392, 0.462, 0.3), 0.035, 4);
+  for (const o of [0.1, -0.1]) a.add(ring.clone(), 'paint', mat(o - 0.0175, 0, 0, 0, Math.PI / 2, 0));
+  a.add(new THREE.CylinderGeometry(0.33, 0.33, 0.2, 36), 'paint', alongX());
+  a.add(lathe([[0.33, 0], [0.3, 0.02], [0.18, 0.05], [0.13, 0.07], [0.12, 0.11], [0, 0.115]], 36), 'paint', chain(mat(0.1175), alongX()));
+  for (let k = 0; k < 10; k++) {
+    const t = (k / 10) * Math.PI * 2;
+    a.add(new THREE.CylinderGeometry(0.014, 0.014, 0.03, 6), 'steel', chain(mat(0.165, Math.cos(t) * 0.215, Math.sin(t) * 0.215), alongX()));
+  }
+  return spinner('Sprocket', v3(s * RUN.xc, RUN.sprocket.y, RUN.sprocket.z), a, s);
+}
+function buildIdler(s) {
+  const a = new Asm('Idler');
+  for (const o of [0.1, -0.1]) {
+    a.add(lathe([[0.27, -0.035], [0.33, -0.035], [0.33, 0.035], [0.27, 0.035], [0.27, -0.035]], 40), 'paint', chain(mat(o), alongX()));
+    for (let k = 0; k < 6; k++) a.add(new THREE.BoxGeometry(0.04, 0.2, 0.045), 'paint', chain(mat(o, 0, 0, (k * Math.PI) / 3), mat(0, 0.175, 0)));
+  }
+  a.add(new THREE.CylinderGeometry(0.09, 0.09, 0.3, 24), 'paint', alongX());
+  a.add(new THREE.CylinderGeometry(0.06, 0.075, 0.05, 20), 'paint', chain(mat(0.175), alongX()));
+  return spinner('Idler', v3(s * RUN.xc, RUN.idler.y, RUN.idler.z), a, s);
+}
+function buildRoller(s) {
+  const a = new Asm('Roller');
+  for (const o of [0.09, -0.09]) a.add(new THREE.CylinderGeometry(0.1, 0.1, 0.07, 24), 'paint', chain(mat(o), alongX()));
+  a.add(new THREE.CylinderGeometry(0.045, 0.045, 0.3, 16), 'paint', alongX());
+  return spinner('Roller', v3(s * RUN.xc, RUN.roller.y, RUN.roller.z), a, s);
+}
+// 單片履帶：外側防滑紋、鉸鏈、內側導齒
+function linkGeo() {
+  const parts = [];
+  const add = (g, m) => parts.push(clean(g).applyMatrix4(m));
+  add(new THREE.BoxGeometry(0.66, 0.03, 0.128), mat(0, 0.022, 0));
+  for (const x of [-0.23, 0.23]) add(new THREE.CylinderGeometry(0.02, 0.02, 0.15, 6, 1, true), chain(mat(x, 0.024, 0.066), alongX()));
+  add(new THREE.BoxGeometry(0.28, 0.022, 0.034), mat(0.17, 0.047, -0.01, 0, 0.35, 0));
+  add(new THREE.BoxGeometry(0.28, 0.022, 0.034), mat(-0.17, 0.047, -0.01, 0, -0.35, 0));
+  const horn = new THREE.BoxGeometry(0.055, 0.1, 0.085).toNonIndexed();
+  const p = horn.getAttribute('position');
+  for (let i = 0; i < p.count; i++) if (p.getY(i) < 0) { p.setX(i, p.getX(i) * 0.55); p.setZ(i, p.getZ(i) * 0.7); }
+  horn.deleteAttribute('normal');
+  horn.computeVertexNormals();
+  add(horn, mat(0, -0.043, 0));
+  return mergeGeometries(parts);
+}
+// 履帶走向：主動輪、托輪、誘導輪與負重輪外緣的凸包
+function trackPath() {
+  const circles = [[RUN.sprocket.z, RUN.sprocket.y, RUN.sprocket.r], [RUN.roller.z, RUN.roller.y, RUN.roller.r], [RUN.idler.z, RUN.idler.y, RUN.idler.r], ...RUN.stations.map((z) => [z, RUN.wheelY, RUN.wheelR])];
+  const pts = [];
+  for (const [cz, cy, r] of circles) for (let k = 0; k < 360; k++) { const t = (k / 360) * Math.PI * 2; pts.push([cz + r * Math.cos(t), cy + r * Math.sin(t)]); }
+  pts.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+  const cross = (o, p, q) => (p[0] - o[0]) * (q[1] - o[1]) - (p[1] - o[1]) * (q[0] - o[0]);
+  const lower = [], upper = [];
+  for (const p of pts) { while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop(); lower.push(p); }
+  for (let i = pts.length - 1; i >= 0; i--) { const p = pts[i]; while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop(); upper.push(p); }
+  const hull = lower.slice(0, -1).concat(upper.slice(0, -1)).reverse(); // 順時針：下段往車尾
+  const n = hull.length, cum = new Float64Array(n + 1);
+  for (let i = 0; i < n; i++) { const p = hull[i], q = hull[(i + 1) % n]; cum[i + 1] = cum[i] + Math.hypot(q[0] - p[0], q[1] - p[1]); }
+  const L = cum[n];
+  const at = (s) => {
+    s = ((s % L) + L) % L;
+    let lo = 0, hi = n;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (cum[mid] <= s) lo = mid; else hi = mid; }
+    const p = hull[lo], q = hull[(lo + 1) % n], t = (s - cum[lo]) / (cum[lo + 1] - cum[lo] || 1);
+    return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+  };
+  return { L, at };
+}
+const PATH = trackPath();
+const N_LINKS = Math.round(PATH.L / 0.15);
+const PITCH = PATH.L / N_LINKS;
+function placeLinks(mesh, xc, offset) {
+  const m = new THREE.Matrix4(), X = v3(1, 0, 0), d = v3(), n = v3(), c = v3();
+  for (let i = 0; i < N_LINKS; i++) {
+    const s = i * PITCH + offset;
+    const [z0, y0] = PATH.at(s), [z1, y1] = PATH.at(s + PITCH);
+    d.set(0, y1 - y0, z1 - z0).normalize();
+    n.set(0, d.z, -d.y);
+    c.set(xc, (y0 + y1) / 2, (z0 + z1) / 2);
+    m.makeBasis(X, n, d).setPosition(c);
+    mesh.setMatrixAt(i, m);
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+}
+
+/* ================= 側裙板 ================= */
+function buildSkirts(s) {
+  const a = new Asm(s > 0 ? 'SkirtsL' : 'SkirtsR');
+  const plates = [[2.85, 1.42, true], [1.39, -0.04], [-0.07, -1.5], [-1.53, -2.96]];
+  const y0 = 0.66, y1 = 1.28;
+  for (const [zf, zr, first] of plates) {
+    const sh = new THREE.Shape();
+    sh.moveTo(zr, y0);
+    if (first) { sh.lineTo(zf - 0.23, y0); sh.lineTo(zf, y0 + 0.2); } else sh.lineTo(zf, y0);
+    sh.lineTo(zf, y1); sh.lineTo(zr, y1); sh.lineTo(zr, y0);
+    a.add(extrude(sh, 0.008, 1), 'paint', zyToX(s > 0 ? 1.715 : -1.707));
+    for (const hz of [zr + 0.25, zf - 0.25]) a.add(new THREE.BoxGeometry(0.075, 0.03, 0.04), 'paint', mat(s * 1.675, 1.265, hz));
+  }
+  const g = a.build();
+  g.visible = false;
+  return g;
+}
+
+/* ================= 貼花 ================= */
+const DECAL = {};
+const decalMats = new Map();
+function decalMat(t) {
+  if (!decalMats.has(t)) decalMats.set(t, new THREE.MeshStandardMaterial({ name: `Marking_${decalMats.size + 1}`, map: t, alphaTest: 0.5, roughness: 0.8, metalness: 0.02, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 }));
+  return decalMats.get(t);
+}
+function decal(t, w, h, m) {
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), decalMat(t));
+  mesh.applyMatrix4(m);
+  mesh.name = 'Marking';
+  mesh.userData.decal = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+/* ================= 場景 ================= */
+const canvas = $('#view');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+} catch (err) {
+  loadingEl.textContent = '這個瀏覽器無法啟用 WebGL，因此無法顯示 3D 模型。';
+  throw err;
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.NeutralToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.45;
+
+const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 4.5;
+controls.maxDistance = 30;
+controls.maxPolarAngle = 86 * D;
+controls.target.set(0, 1.2, 0.3);
+controls.autoRotateSpeed = 0.8;
+
+const sun = new THREE.DirectionalLight(0xfff0d8, 2.5);
+sun.position.set(7, 12, 6);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 2, far: 35 });
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.025;
+scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xe3e9ef, 0x5a5040, 0.75));
+
+// 地面：程序生成泥土貼圖，外圍淡出到背景
+const GROUND = { size: 60, repeat: 5 };
+const groundTex = tex(groundCanvas(), { repeat: GROUND.repeat });
+groundTex.anisotropy = maxAniso;
+const fadeTex = tex(radialCanvas(256, [[0, '#fff'], [0.2, '#fff'], [0.52, '#000'], [1, '#000']]), { srgb: false });
+fadeTex.wrapS = fadeTex.wrapT = THREE.ClampToEdgeWrapping;
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(GROUND.size, GROUND.size), new THREE.MeshStandardMaterial({ map: groundTex, alphaMap: fadeTex, transparent: true, roughness: 1, depthWrite: false }));
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+ground.renderOrder = -1;
+scene.add(ground);
+
+await Promise.race([document.fonts.load('700 200px "Barlow Condensed"').catch(() => {}), new Promise((r) => setTimeout(r, 1500))]);
+DECAL.cross = tex(crossCanvas());
+DECAL.number = tex(numberCanvas('401'));
+
+// 塗裝貼圖（依需要生成並快取）
+const paintCache = new Map();
+function paintTexture(kind) {
+  if (!paintCache.has(kind)) {
+    const t = tex(paintCanvas(kind));
+    t.anisotropy = maxAniso;
+    t.userData.mimeType = 'image/jpeg';
+    paintCache.set(kind, t);
+  }
+  return paintCache.get(kind);
+}
+MAT.paint.map = paintTexture('tri');
+
+// 組裝
+const tank = new THREE.Group();
+tank.name = 'Panther_Ausf_G';
+const body = new THREE.Group();
+body.name = 'Body';
+body.position.y = 0.9;
+const bodyInner = new THREE.Group();
+bodyInner.name = 'Hull';
+bodyInner.position.y = -0.9;
+body.add(bodyInner);
+tank.add(body);
+
+buildHull().build(bodyInner);
+const antenna = new THREE.Mesh(clean(new THREE.CylinderGeometry(0.004, 0.008, 2.0, 6)).applyMatrix4(mat(-1.08, HULL.deck + 1.08, -2.37, -4 * D)), MAT.steel);
+antenna.name = 'Antenna';
+antenna.castShadow = true;
+antenna.userData.noPrint = true;
+bodyInner.add(antenna);
+const { turret, gun, barrel } = buildTurret();
+bodyInner.add(turret);
+const skirts = [buildSkirts(1), buildSkirts(-1)];
+skirts.forEach((g) => bodyInner.add(g));
+
+// 車體國籍標誌（兩側與左後置物箱）
+for (const s of [1, -1]) {
+  const y = 1.53, n = nSide(s);
+  bodyInner.add(decal(DECAL.cross, 0.42, 0.42, planeFrame(v3(s * xS(y), y, -2.45).addScaledVector(n, 0.004), n)));
+}
+bodyInner.add(decal(DECAL.cross, 0.3, 0.3, planeFrame(v3(0.835, 1.46, zR(1.66) - 0.264), v3(0, 0, -1))));
+
+const running = new THREE.Group();
+running.name = 'RunningGear';
+tank.add(running);
+const WG = wheelGeos();
+const wheelSets = ['outer', 'inner'].map((kind) => {
+  const slots = [];
+  for (const s of [1, -1]) {
+    RUN.stations.forEach((z, i) => {
+      const li = kind === 'outer' ? (i % 2 === 0 ? 0 : 1) : (i % 2 === 0 ? 2 : 3);
+      slots.push({ x: s * (RUN.xc + RUN.layers[li]), z, s, phase: hash2(i * 7 + (s > 0 ? 1 : 2), li) * Math.PI * 2 });
+    });
+  }
+  const tag = kind === 'outer' ? 'Outer' : 'Inner';
+  const meshes = [new THREE.InstancedMesh(WG[kind].tire, MAT.rubber, slots.length), new THREE.InstancedMesh(WG[kind].disc, MAT.paint, slots.length)];
+  meshes[0].name = `RoadWheels${tag}_Tyres`;
+  meshes[1].name = `RoadWheels${tag}_Discs`;
+  for (const im of meshes) { im.castShadow = true; im.receiveShadow = true; im.frustumCulled = false; running.add(im); }
+  return { slots, meshes };
+});
+const sprockets = [buildSprocket(1), buildSprocket(-1)];
+const idlers = [buildIdler(1), buildIdler(-1)];
+const rollers = [buildRoller(1), buildRoller(-1)];
+[...sprockets, ...idlers, ...rollers].forEach((o) => running.add(o));
+const linkG = linkGeo();
+const tracks = [1, -1].map((s) => {
+  const im = new THREE.InstancedMesh(linkG, MAT.track, N_LINKS);
+  im.name = s > 0 ? 'Track_L' : 'Track_R';
+  im.castShadow = true;
+  im.receiveShadow = true;
+  im.frustumCulled = false;
+  im.userData.xc = s * RUN.xc;
+  running.add(im);
+  return im;
+});
+scene.add(tank);
+
+const _wm = new THREE.Matrix4(), _rx = new THREE.Matrix4(), _flip = mat(0, 0, 0, 0, Math.PI, 0);
+function poseRunningGear(offset) {
+  const aw = offset / RUN.wheelR;
+  for (const { slots, meshes } of wheelSets) {
+    slots.forEach((w, i) => {
+      _wm.makeTranslation(w.x, RUN.wheelY, w.z).multiply(_rx.makeRotationX(aw + w.phase));
+      if (w.s < 0) _wm.multiply(_flip);
+      meshes.forEach((im) => im.setMatrixAt(i, _wm));
+    });
+    meshes.forEach((im) => (im.instanceMatrix.needsUpdate = true));
+  }
+  sprockets.forEach((o) => (o.rotation.x = offset / RUN.sprocket.r));
+  idlers.forEach((o) => (o.rotation.x = offset / RUN.idler.r));
+  rollers.forEach((o) => (o.rotation.x = offset / RUN.roller.r));
+  tracks.forEach((im) => placeLinks(im, im.userData.xc, offset));
+}
+poseRunningGear(0);
+
+/* ================= 特效：砲口焰與煙 ================= */
+const fx = new THREE.Group();
+fx.name = 'Effects';
+scene.add(fx);
+const flashMat = new THREE.SpriteMaterial({ map: tex(flashCanvas()), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0 });
+const flashes = [[0, 0, 4.95, 1.9], [0.3, 0, 4.39, 0.8], [-0.3, 0, 4.39, 0.8], [0.3, 0, 4.54, 0.7], [-0.3, 0, 4.54, 0.7]].map(([x, y, z, sc]) => {
+  const sp = new THREE.Sprite(flashMat);
+  sp.position.set(x, y, z);
+  sp.scale.setScalar(sc);
+  sp.userData.base = sc;
+  sp.userData.noExport = true;
+  barrel.add(sp);
+  return sp;
+});
+const flashLight = new THREE.PointLight(0xffa24a, 0, 14, 2);
+flashLight.position.set(0, 0, 4.9);
+flashLight.userData.noExport = true;
+barrel.add(flashLight);
+const smokeTex = tex(smokeCanvas());
+const puffs = [];
+function puff(pos, vel, { size = 0.6, grow = 1.6, life = 2.4, color = 0x9a978f, opacity = 0.75 } = {}) {
+  let p = puffs.find((q) => !q.sprite.visible);
+  if (!p) {
+    if (puffs.length > 140) return;
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: smokeTex, depthWrite: false, transparent: true }));
+    fx.add(sprite);
+    p = { sprite };
+    puffs.push(p);
+  }
+  Object.assign(p, { vel: vel.clone(), age: 0, life, size, grow, opacity });
+  p.sprite.material.color.set(color);
+  p.sprite.material.rotation = Math.random() * Math.PI * 2;
+  p.sprite.position.copy(pos);
+  p.sprite.scale.setScalar(size);
+  p.sprite.visible = true;
+}
+function updatePuffs(dt) {
+  let alive = false;
+  for (const p of puffs) {
+    if (!p.sprite.visible) continue;
+    p.age += dt;
+    if (p.age >= p.life) { p.sprite.visible = false; continue; }
+    alive = true;
+    const k = p.age / p.life;
+    p.sprite.position.addScaledVector(p.vel, dt);
+    p.vel.multiplyScalar(Math.pow(0.35, dt));
+    p.vel.y += 0.25 * dt;
+    p.sprite.scale.setScalar(p.size * (1 + p.grow * Math.sqrt(k) * 2));
+    p.sprite.material.opacity = p.opacity * (1 - k) * Math.min(1, p.age * 12);
+  }
+  return alive;
+}
+
+/* ================= 動畫狀態 ================= */
+const state = { traverse: 0, elevation: 0, speed: 0, targetSpeed: 0, offset: 0, fireT: -1, reload: 1, driveT: 0, exhaustT: 0 };
+const RELOAD_S = 2.2;
+function setTraverse(deg) {
+  state.traverse = deg;
+  turret.rotation.y = -deg * D;
+  const hrs = ((Math.round(deg / 30) % 12) + 12) % 12 || 12;
+  $('#traverse-out').textContent = deg === 0 ? '正前方' : `${deg > 0 ? '右' : '左'} ${Math.abs(deg)}°`;
+  $('#dial-text').textContent = `${hrs} 點鐘`;
+  $('#dial-gun').style.transform = `rotate(${deg}deg)`;
+}
+function setElevation(deg) {
+  state.elevation = deg;
+  gun.rotation.x = -deg * D;
+  $('#elevation-out').textContent = `${deg > 0 ? '+' : deg < 0 ? '−' : ''}${Math.abs(deg).toFixed(1)}°`;
+}
+const _mp = v3(), _q = new THREE.Quaternion(), _dir = v3();
+function fire() {
+  if (state.reload < 1) return;
+  state.fireT = 0;
+  state.reload = 0;
+  $('#fire').disabled = true;
+  barrel.updateMatrixWorld(true);
+  barrel.getWorldQuaternion(_q);
+  _dir.set(0, 0, 1).applyQuaternion(_q);
+  const side = v3(1, 0, 0).applyQuaternion(_q);
+  for (const [z, k] of [[4.39, 1], [4.54, 0.8]]) {
+    for (const sg of [1, -1]) {
+      for (let i = 0; i < 3; i++) {
+        _mp.set(sg * 0.2, 0, z).applyMatrix4(barrel.matrixWorld);
+        puff(_mp, side.clone().multiplyScalar(sg * (3 + Math.random() * 3) * k).addScaledVector(_dir, 1 + Math.random() * 2), { size: 0.45, life: 2.2 + Math.random() });
+      }
+    }
+  }
+  for (let i = 0; i < 5; i++) {
+    _mp.set(0, 0, 4.8).applyMatrix4(barrel.matrixWorld);
+    puff(_mp, _dir.clone().multiplyScalar(5 + i * 2.5).add(v3((Math.random() - 0.5) * 1.2, Math.random() * 0.8, 0)), { size: 0.5, life: 2.6 + Math.random() });
+  }
+  _mp.set(0, 0, 4.8).applyMatrix4(barrel.matrixWorld);
+  for (let i = 0; i < 8; i++) {
+    const a = Math.random() * Math.PI * 2;
+    puff(v3(_mp.x + Math.cos(a) * 0.5, 0.15, _mp.z + Math.sin(a) * 0.5), v3(Math.cos(a) * 2.5, 0.2, Math.sin(a) * 2.5).addScaledVector(_dir, 1.5), { size: 0.7, grow: 1.2, life: 2.8, color: 0x9c8a6c, opacity: 0.6 });
+  }
+}
+function updateFire(dt) {
+  let busy = false;
+  if (state.fireT >= 0) {
+    state.fireT += dt;
+    const t = state.fireT;
+    const rec = t < 0.06 ? t / 0.06 : Math.max(0, 1 - (t - 0.06) / 0.7);
+    barrel.position.z = -0.43 * (rec * rec * (3 - 2 * rec));
+    const f = t < 0.1 ? 1 - t / 0.1 : 0;
+    flashMat.opacity = f;
+    flashes.forEach((sp) => sp.scale.setScalar(sp.userData.base * (0.8 + 0.5 * (1 - f))));
+    flashLight.intensity = f * 60;
+    const rock = t < 1.6 ? Math.exp(-t / 0.3) * Math.sin((t / 0.55) * Math.PI * 2) : 0;
+    const tr = -state.traverse * D;
+    body.rotation.x = -1.1 * D * Math.cos(tr) * rock + driveBob();
+    body.rotation.z = 1.1 * D * Math.sin(tr) * rock;
+    if (t > 1.6) { state.fireT = -1; body.rotation.z = 0; }
+    busy = true;
+  }
+  if (state.reload < 1) {
+    state.reload = Math.min(1, state.reload + dt / RELOAD_S);
+    $('#fire').style.setProperty('--reload', state.reload.toFixed(3));
+    if (state.reload >= 1) $('#fire').disabled = false;
+  }
+  return busy;
+}
+function driveBob() { return state.speed > 0.01 ? Math.sin(state.driveT * 5.3) * 0.12 * D * Math.min(1, state.speed / 2) : 0; }
+function updateDrive(dt) {
+  const target = state.targetSpeed / 3.6;
+  if (Math.abs(state.speed - target) > 1e-3) state.speed += Math.sign(target - state.speed) * Math.min(Math.abs(target - state.speed), 1.4 * dt);
+  else state.speed = target;
+  if (state.speed <= 0) { body.position.y = 0.9; if (state.fireT < 0) body.rotation.x = 0; return false; }
+  state.driveT += dt;
+  state.offset += state.speed * dt;
+  poseRunningGear(state.offset);
+  groundTex.offset.y -= (state.speed * dt) / (GROUND.size / GROUND.repeat);
+  if (state.fireT < 0) { body.rotation.x = driveBob(); body.position.y = 0.9 + Math.sin(state.driveT * 7.1) * 0.004; }
+  state.exhaustT -= dt;
+  if (state.exhaustT <= 0) {
+    state.exhaustT = 0.16;
+    for (const x of [0.42, -0.42]) puff(v3(x, 2.33, -3.62), v3((Math.random() - 0.5) * 0.3, 0.9, -0.4 - state.speed), { size: 0.18, grow: 1.4, life: 1.5, color: 0x4a4946, opacity: 0.35 });
+  }
+  return true;
+}
+
+/* ================= 視角 ================= */
+const VIEWS = {
+  front34: { dir: [0.62, 0.3, 0.72], dist: 11.2, target: [0, 1.2, 0.3] },
+  side: { dir: [1, 0.12, 0.02], dist: 11, target: [0, 1.2, 0.5] },
+  front: { dir: [0, 0.16, 1], dist: 10.5, target: [0, 1.3, 0] },
+  rear34: { dir: [-0.62, 0.32, -0.72], dist: 11.2, target: [0, 1.2, -0.3] },
+  top: { dir: [0.001, 1, 0.02], dist: 13, target: [0, 1, 0.6] },
+};
+let tween = null;
+function viewPose(key) {
+  const v = VIEWS[key], aspect = camera.aspect || 1.6;
+  const k = aspect < 0.9 ? 1.55 : aspect < 1.3 ? 1.2 : 1;
+  return { pos: v3(...v.dir).normalize().multiplyScalar(v.dist * k).add(v3(...v.target)), target: v3(...v.target) };
+}
+function goView(key, instant = false) {
+  const to = viewPose(key);
+  if (instant || reduceMotion) { camera.position.copy(to.pos); controls.target.copy(to.target); controls.update(); return; }
+  tween = { from: { pos: camera.position.clone(), target: controls.target.clone() }, to, t0: performance.now(), dur: 900 };
+}
+function updateTween(now) {
+  if (!tween) return false;
+  const k = Math.min(1, (now - tween.t0) / tween.dur), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  camera.position.lerpVectors(tween.from.pos, tween.to.pos, e);
+  controls.target.lerpVectors(tween.from.target, tween.to.target, e);
+  if (k >= 1) tween = null;
+  return true;
+}
+controls.addEventListener('start', () => { tween = null; });
+
+/* ================= 版面與繪製迴圈 ================= */
+const stage = $('#stage');
+let dirty = true;
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  dirty = true;
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+goView('front34', true);
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  let active = false;
+  active = updateDrive(dt) || active;
+  active = updateFire(dt) || active;
+  active = updatePuffs(dt) || active;
+  active = updateTween(now) || active;
+  const moved = controls.update(dt);
+  if (moved || active || dirty) {
+    renderer.render(scene, camera);
+    dirty = false;
+  }
+  requestAnimationFrame(frame);
+}
+renderer.render(scene, camera);
+loadingEl.hidden = true;
+requestAnimationFrame(frame);
+
+/* ================= 介面 ================= */
+if (matchMedia('(pointer: coarse)').matches) $('#hint').textContent = '單指旋轉　雙指縮放與平移';
+{
+  const g = $('#dial-ticks');
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2, r0 = k % 3 === 0 ? 24 : 26.5;
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', 32 + Math.sin(a) * r0); l.setAttribute('y1', 32 - Math.cos(a) * r0);
+    l.setAttribute('x2', 32 + Math.sin(a) * 29); l.setAttribute('y2', 32 - Math.cos(a) * 29);
+    g.appendChild(l);
+  }
+}
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem('panther-g') || '{}'); } catch { return {}; } },
+  set(v) { try { localStorage.setItem('panther-g', JSON.stringify({ ...store.get(), ...v })); } catch { /* 不可用時略過 */ } },
+};
+$('#traverse').addEventListener('input', (e) => { setTraverse(+e.target.value); dirty = true; });
+$('#elevation').addEventListener('input', (e) => { setElevation(+e.target.value); dirty = true; });
+$('#fire').addEventListener('click', fire);
+function radio(groupSel, attr, onPick) {
+  const btns = [...document.querySelectorAll(`${groupSel} [role="radio"]`)];
+  const pick = (btn) => { btns.forEach((b) => b.setAttribute('aria-checked', String(b === btn))); onPick(btn.dataset[attr]); };
+  btns.forEach((b) => b.addEventListener('click', () => pick(b)));
+  return (val) => { const b = btns.find((x) => x.dataset[attr] === val); if (b) pick(b); };
+}
+radio('#speed', 'speed', (v) => { state.targetSpeed = +v; });
+const pickScheme = radio('#schemes', 'scheme', (k) => {
+  loadingEl.hidden = paintCache.has(k);
+  loadingEl.textContent = '正在調漆…';
+  requestAnimationFrame(() => setTimeout(() => {
+    MAT.paint.map = paintTexture(k);
+    loadingEl.hidden = true;
+    dirty = true;
+    store.set({ scheme: k });
+  }, 0));
+});
+$('#skirts').addEventListener('change', (e) => { skirts.forEach((g) => (g.visible = e.target.checked)); dirty = true; store.set({ skirts: e.target.checked }); });
+$('#markings').addEventListener('change', (e) => { tank.traverse((o) => { if (o.userData.decal) o.visible = e.target.checked; }); dirty = true; store.set({ markings: e.target.checked }); });
+$('#autorotate').addEventListener('change', (e) => { controls.autoRotate = e.target.checked; });
+document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => goView(b.dataset.view)));
+
+const saved = store.get();
+if (saved.scheme && saved.scheme !== 'tri') pickScheme(saved.scheme);
+if (saved.skirts) { $('#skirts').checked = true; skirts.forEach((g) => (g.visible = true)); }
+if (saved.markings === false) { $('#markings').checked = false; tank.traverse((o) => { if (o.userData.decal) o.visible = false; }); }
+
+/* ================= 匯出 ================= */
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+async function deflate(u8) {
+  if (typeof CompressionStream === 'undefined') return null;
+  try {
+    const stream = new Blob([u8]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  } catch { return null; }
+}
+async function zip(files) {
+  const enc = new TextEncoder(), out = [], central = [];
+  const now = new Date();
+  const time = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+  const date = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+  let offset = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), raw = f.data, crc = crc32(raw);
+    let data = await deflate(raw), method = 8;
+    if (!data || data.length >= raw.length) { data = raw; method = 0; }
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, method, true);
+    lh.setUint16(10, time, true); lh.setUint16(12, date, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, raw.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    out.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, method, true);
+    ch.setUint16(12, time, true); ch.setUint16(14, date, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, raw.length, true); ch.setUint16(28, name.length, true);
+    ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
+  }
+  const size = central.reduce((n, c) => n + c.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, size, true); end.setUint32(16, offset, true);
+  return new Blob([...out, ...central, new Uint8Array(end.buffer)], { type: 'application/zip' });
+}
+// 複製一份可匯出的車：展開 InstancedMesh、去掉特效與隱藏物件
+function exportRoot({ decals = true, scale = 1, index = true, print = false } = {}) {
+  tank.updateMatrixWorld(true);
+  const copy = tank.clone(true);
+  const drop = [];
+  copy.traverse((o) => { if (o !== copy && (o.userData.noExport || o.isSprite || o.isLight || !o.visible || (!decals && o.userData.decal) || (print && o.userData.noPrint))) drop.push(o); });
+  drop.forEach((o) => o.parent && o.parent.remove(o));
+  const inst = [];
+  copy.traverse((o) => { if (o.isInstancedMesh) inst.push(o); });
+  for (const im of inst) {
+    const m = new THREE.Matrix4(), geos = [];
+    for (let i = 0; i < im.count; i++) { im.getMatrixAt(i, m); geos.push(im.geometry.clone().applyMatrix4(m)); }
+    const mesh = new THREE.Mesh(mergeGeometries(geos), im.material);
+    mesh.name = im.name;
+    mesh.position.copy(im.position); mesh.quaternion.copy(im.quaternion); mesh.scale.copy(im.scale);
+    im.parent.add(mesh);
+    im.parent.remove(im);
+  }
+  if (index) copy.traverse((o) => { if (o.isMesh) o.geometry = mergeVertices(o.geometry); });
+  const root = new THREE.Group();
+  root.name = 'Panther';
+  root.add(copy);
+  root.scale.setScalar(scale);
+  root.updateMatrixWorld(true);
+  return root;
+}
+const README = {
+  glb: '豹式坦克 G 型（Pz.Kpfw. V Panther Ausf. G）3D 模型\r\n格式：glTF 2.0 二進位（GLB），含迷彩貼圖與材質\r\n單位：公尺，1:1；+Y 朝上，車頭朝 +Z\r\n零件：Hull、Turret、Gun、Barrel、履帶、負重輪等分開命名\r\n',
+  stl: '豹式坦克 G 型 3D 列印用 STL\r\n單位：毫米，比例 1:35（車體長約 196 mm）\r\n已移除天線。模型由多個重疊實體組成，切片軟體會自動合併；機槍、防空機槍環等細件可能需要加粗或移除。\r\n',
+  obj: '豹式坦克 G 型 OBJ 網格\r\n單位：公尺，1:1；+Y 朝上，車頭朝 +Z\r\n不含材質（需要材質與貼圖請使用 GLB）。\r\n',
+};
+async function buildExport(fmt) {
+  if (fmt === 'glb') {
+    const { GLTFExporter } = await import('three/addons/exporters/GLTFExporter.js');
+    const buf = await new GLTFExporter().parseAsync(exportRoot(), { binary: true, maxTextureSize: 1024 });
+    return { name: 'panther_ausf_g.glb', bytes: new Uint8Array(buf) };
+  }
+  if (fmt === 'stl') {
+    const { STLExporter } = await import('three/addons/exporters/STLExporter.js');
+    const dv = new STLExporter().parse(exportRoot({ decals: false, scale: 1000 / 35, index: false, print: true }), { binary: true });
+    return { name: 'panther_ausf_g_1-35.stl', bytes: new Uint8Array(dv.buffer, dv.byteOffset, dv.byteLength) };
+  }
+  const { OBJExporter } = await import('three/addons/exporters/OBJExporter.js');
+  return { name: 'panther_ausf_g.obj', bytes: new TextEncoder().encode(new OBJExporter().parse(exportRoot({ decals: false }))) };
+}
+const hasHost = typeof window.claude?.use === 'function';
+let dlApi;
+async function downloads() {
+  if (!hasHost) return null;
+  if (dlApi === undefined) { try { dlApi = await window.claude.use('downloads'); } catch { dlApi = null; } }
+  return dlApi;
+}
+async function saveFile(filename, blob) {
+  if (hasHost) {
+    const dl = await downloads();
+    if (!dl) throw { code: 'unavailable' };
+    return dl.save({ filename, data: blob });
+  }
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  return { status: 'saved' };
+}
+const statusEl = $('#export-status');
+const exportBtns = [...document.querySelectorAll('[data-export]')];
+if (hasHost) downloads().then((dl) => { if (!dl) { exportBtns.forEach((b) => (b.disabled = true)); statusEl.textContent = '這個檢視環境不支援下載檔案。'; } });
+exportBtns.forEach((btn) => btn.addEventListener('click', async () => {
+  const fmt = btn.dataset.export;
+  exportBtns.forEach((b) => (b.disabled = true));
+  statusEl.textContent = fmt === 'png' ? '正在擷取畫面…' : `正在產生 ${fmt.toUpperCase()}…`;
+  try {
+    let filename, blob;
+    if (fmt === 'png') {
+      renderer.render(scene, camera);
+      blob = await new Promise((r) => canvas.toBlob(r, 'image/png'));
+      filename = 'panther-ausf-g.png';
+    } else {
+      await new Promise((r) => setTimeout(r, 30));
+      const { name, bytes } = await buildExport(fmt);
+      blob = await zip([{ name, data: bytes }, { name: 'README.txt', data: new TextEncoder().encode(README[fmt]) }]);
+      filename = `panther-ausf-g-${fmt}.zip`;
+    }
+    const res = await saveFile(filename, blob);
+    statusEl.textContent = res.status === 'delivered' ? `已送出 ${filename}` : `已下載 ${filename}（${(blob.size / 1048576).toFixed(1)} MB）`;
+  } catch (err) {
+    const code = err?.code;
+    statusEl.textContent = code === 'declined' ? '已取消下載。' : code === 'rate_limited' ? '已有一個下載確認視窗開著，請先處理它。' : code === 'unavailable' || code === 'not_granted' ? '這個檢視環境不支援下載檔案。' : `匯出失敗：${err?.message || err}`;
+  } finally {
+    exportBtns.forEach((b) => (b.disabled = false));
+  }
+}));
+
+// 供自動化測試與進一步操作使用
+window.__panther = {
+  view: (k) => { goView(k, true); dirty = true; },
+  cam: (p, t) => { camera.position.set(...p); controls.target.set(...t); controls.update(); dirty = true; },
+  set: ({ traverse, elevation, scheme, skirts: sk, speed } = {}) => {
+    if (traverse !== undefined) { $('#traverse').value = traverse; setTraverse(traverse); }
+    if (elevation !== undefined) { $('#elevation').value = elevation; setElevation(elevation); }
+    if (scheme) MAT.paint.map = paintTexture(scheme);
+    if (sk !== undefined) skirts.forEach((g) => (g.visible = sk));
+    if (speed !== undefined) state.targetSpeed = speed;
+    dirty = true;
+  },
+  fire,
+  exportBase64: async (fmt) => {
+    const { bytes } = await buildExport(fmt);
+    let s = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(s);
+  },
+  stats: () => { let tris = 0; tank.traverse((o) => { if (o.isMesh) tris += (o.geometry.index ? o.geometry.index.count : o.geometry.getAttribute('position').count) / 3 * (o.isInstancedMesh ? o.count : 1); }); return { tris, links: N_LINKS, pathLength: PATH.L }; },
+};
+window.__pantherReady = true;
+</script>
+</body>
+</html>
